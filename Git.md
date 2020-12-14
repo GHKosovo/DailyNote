@@ -12,14 +12,6 @@
 
 (我觉得这个clone命令 就是把仓库里面的项目拷贝到本地共用户操作使用)
 
-#### 添加和提交
-
-- 添加到暂存区：git add \<filename>
-
-- 提交到HEAD：git commit -m "代码提交信息"
-
-  > 目前还没提交到远程仓库
-
 #### 推送改动
 
 - 提交到远程仓库：git push origin master(master可以换为其他分支)
@@ -71,6 +63,15 @@
 - git reset --hard origin/master
 
 <hr>
+### 补充：
+
+`git status` 命令显示出来的中文文件档名为八进制的字符编码，如果想要正常显示，命令如下：
+
+```
+git config --global core.quotepath false
+```
+
+
 
 ### Recording Changes to the Repository
 
