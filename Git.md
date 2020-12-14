@@ -1,3 +1,5 @@
+[toc]
+
 # Window 版的Git
 
 ## Git Basic
@@ -65,7 +67,7 @@ $ git commit -m 'Initial project version'
 
 `git add *`用来指定所需要记录的文件，最后`git commit *`用来一并提交之前所有的所需要记录的文件。
 
-### 5.克隆一个存在的仓库
+#### 克隆一个存在的仓库
 
 ```bash
 $ git clone <url>
@@ -77,6 +79,8 @@ $ git clone https://github.com/libgit2/libgit2 mylibgit
 
 克隆仓库，一般会在所操作的目录直接生成一个以\<url>结尾字段为名的仓库，当然也可以自己指定，在\<url> 后面添加参数（文件名）就可以
 
+### 4.检查文件的状态
+
 #### 文件状态的生命周期
 
 每一个文件在工作目录都是两种状态中的一种：记录和未记录
@@ -85,7 +89,7 @@ $ git clone https://github.com/libgit2/libgit2 mylibgit
 
 未记录：就是没有放到暂存区的文件
 
-#### 检查文件的状态
+#### 检查文件状态
 
 ```bash
 $ git status
@@ -103,7 +107,7 @@ nothing to commit, working directory clean
 git config --global core.quotepath false
 ```
 
-### Recording Changes to the Repository
+#### Recording Changes to the Repository
 
 ![The lifecycle of the status of your files](https://git-scm.com/book/en/v2/images/lifecycle.png)
 
@@ -124,7 +128,7 @@ git config --global core.quotepath false
 
 这两种状态就是所谓的版本问题了，暂存区的是上一个已提交的版本，现在在工作区的是当前的新版本，还未提交！
 
-### 显示状态快捷方式
+#### 显示状态快捷方式
 
 ```bash
 $ git status -s			#添加参数 -s
@@ -135,7 +139,7 @@ M  lib/simplegit.rb     #Staged Modified
 ?? LICENSE.txt          #Untracked
 ```
 
-### 忽略文件
+#### 忽略文件
 
 > 忽略文件就是不让Git自动添加和显示那些Untracked文件，比如log文件，构建系统产生的文件
 
@@ -145,21 +149,21 @@ $ cat .gitignore		#新建.gitignore文件
 *~						#忽略以波浪线为结尾的文件
 ```
 
-### Viewing Your Staged and Unstaged Changes
+#### Viewing Your Staged and Unstaged Changes
 
 ```bash
 $ git diff						#What have you changed but not yet staged?
 $ git diff --staged/--cached	#what have you staged that you are about to commit
 ```
 
-### 提交修改
+### 5.提交修改
 
 ```bash
 $ git commit			#不写提交信息，Git会自动根据剥离出来的注释和不同来添加提交信息
 $ git commit -m "what you want to comment" #通过参数（-m），自己添加提交信息
 ```
 
-### 删除文件
+### 6.删除文件
 
 ```bash
 $ rm PROJECTS.md		#删除暂存区的文件，但是工作区的文件还在
@@ -172,7 +176,7 @@ $ git rm log/\*.log		#删除log文件夹里面的所有以.log结尾的文件
 
 > 如果只是删除一个没有修改的文件，那么可以直接`git rm`，他就会删除这个文件的所有信息，如果你修改过这个文件，那么为了以后能恢复这个文件，就需要存储这个文件记录在Git仓库可供你以后恢复这个文件，也就是添加参数`-f `;
 
-### 移动文件
+### 7.移动文件
 
 ```bash
 $ git mv READMD.md READMD
@@ -184,9 +188,9 @@ $ git add README
 
 > 也就是说，`git mv` 再修改文件名之后会自动`git add`文件到暂存区
 
-### 查看提交历史
+### 8.查看提交历史
 
-```  
+```  bash
 $ git log    #列出仓库的所有提交
 ```
 
@@ -253,7 +257,7 @@ git log -- path/to/file   #--用于分割选项和参数
 
 > `--no-merge用于去掉合并提交的信息，避免混乱`
 
-### 撤销
+### 9.撤销
 
 ```bash
 $ git commit --amend
@@ -281,7 +285,7 @@ $ git restore --staged contributing.md  #撤销暂存区的记录
 $ git restore contributing.md 			#撤销工作区的记录
 ```
 
-### 使用远程
+### 10.使用远程
 
 ```bash
 $ git remote 			#显示每一个远程的仓库的简称
@@ -291,12 +295,18 @@ $ git remote -v			#除了显示简称还显示远程仓库的读取和推送的U
 推送和读取远程仓库可以多个，也就是说，对于同一仓库，可能有很多人分工合作，所以你需要跟这些人对接，你可能从某个人的版本那拉取数据，也可能推送数据给某个其他人；
 
 ```bash
-$ git remote add <shortname> <url>  #添加远程仓库
-$ git fetch pb						#拉取远程仓库的更新
-$ git pull <shortname> <local branch>						#拉取远程仓库的更新并合并拉取得数据
+$ git remote add <shortname> <url>  		#添加远程仓库
+$ git fetch <remote> <remote-branch>		#拉取远程仓库的更新
+$ git pull <shortname> <local branch>		#拉取远程仓库的更新并合并拉取得数据
 ```
 
 `git fetch `只是拉取数据，并没有合并你的数据和这些拉去的数据，所以需要手动自己合并数据；
+
+```bash
+$ git fetch origin master					#拉取远程仓库更新
+$ git branch -r/-a							#查看远程分支
+$ git merge origin/master					#合并远程分支到本地分支
+```
 
 而使用`git pull`则会拉取并合并数据	
 
@@ -307,7 +317,7 @@ $ git remote rename pb paul			#重命名远程仓库名为paul
 $ git remote remove paul			#删除远程仓库
 ```
 
-### Togging
+### 11.Togging
 
 ```bash
 $ git tag -l(--list)   				#列出所有标签
@@ -342,7 +352,7 @@ $ git checkout v2.0,0				#检查标签
 
 检查标签会进入‘detached HEAD’状态，这种状态下修改了即使提交了也不会提交到标签里面，也就是修改提交无效，如果想要保存修改状态，可以使用另一个分支来保存这些修改
 
-### Alias
+### 12.Alias
 
 ```bash
 $ git config --global alias.co checkout			#给git checkout设置别名
@@ -352,7 +362,12 @@ $ git config --global alias.visual '!gitk'		#运行外部命令，我还不太�
 ```
 
 <hr>
-# Git Branching
+
+## Git Branching
+
+
+### 1.新建分支
+
 
 ```bash
 $ git branch testing			#新建分支
@@ -361,12 +376,16 @@ $ git checkout testing			#切换分支
 $ git checkout -b <newbranchname>	#新建分支并切换到新分支
 ```
 
+### 2.切换分支
+
 > 切换分支会修改工作目录中的文件记录
 
 ```bash
 $ git switch testing-branch		#切换分支
 $ git switch -c new-branch		#新建分支并切换分支
 ```
+
+### 3.合并分支
 
 ```bash
 $ git checkout master			#切换到master分支
@@ -382,7 +401,7 @@ $ git mergetool
 
 如果合并分支的时候出现冲突，这时候可以自己修改文件，解决这些冲突；或者是像上面一样，调用解决冲突的方法`git mergetool`来更加便捷地处理冲突
 
-### 分支管理
+### 4.分支管理
 
 ```bash
 $ git branch					#显示分支
@@ -397,7 +416,7 @@ $ git branch --no-merged master	#显示没有加入到master分支的分支
 
 `git branch -D testing`
 
-#### 改变分支名
+### 5.改变分支名
 
 > 当其他合作者正在某个分支上工作时，不能修改该分支名；修改master/main/mainline等分支要注意，请参阅“Changing the master branch name”
 
@@ -446,5 +465,5 @@ git branch --all
 $ git push origin --delete master
 ```
 
-### Branching Workflows
+### 6.Branching Workflows
 
