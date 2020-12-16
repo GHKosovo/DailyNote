@@ -1,0 +1,362 @@
+## 简介
+
+这篇文章主要讲异步消息，借助Spring，我们有多个实现异步消息的可选方案。我们将会看到如何在Spring中使用Java消息服务（Java Message Service，JMS）和高级消息队列协议（Advanced Message Queuing Protocol，AMQP）发送和接收消息。
+
+除了基本的消息发送和接收之外，我们还会看到Spring对消息驱动POJO的支持，它是一种与EJB的消息驱动Bean（message-driven bean，MDB）类似的消息接收方式。
+
+在异步消息中有两个主要的概念： **消息代理** （message broker）和 **目的地** （destination）。当一个应用发送消息时，会将消息交给一个**消息代理**。**消息代理**可以确保消息被投递到指定的**目的地**，同时解放发送者，使其能够继续进行其他的业务。
+
+**目的地**只关注消息应该从哪里 获得——而不关心是由 谁 取走消息的。
+
+尽管不同的消息系统会提供不同的消息路由模式，但是有两种通用的目的地：队列（queue）和主题（topic）。每种类型都与特定的消息模型相关联，分别是点对点模型（队列）和发布/订阅模型（主题）。
+
+## 使用JMS发送消息
+
+Java消息服务（Java Message Service ，JMS）是一个Java标准，定义了使用消息代理的通用API。在JMS出现之前，每个消息代理都有私有的API，这就使得不同代理之间的消息代码很难通用。但是借助JMS，所有遵从规范的实现都使用通用的接口，这就类似于JDBC为数据库操作提供了通用的接口一样。
+
+Spring通过基于模板的抽象为JMS功能提供了支持，这个模板也就是JmsTemplate 。使用 JmsTemplate，能够非常容易地在消息生产方发送队列和主题消息，在消费消息的那一方，也能够非常容易地接收这些消息。Spring还提供了消息驱动POJO的理念：这是一个简单的Java对象，它能够以异步的方式响应队列或主题上到达的消息。
+
+### 在Spring中搭建消息代理
+
+我们选择ActiveMQ作为消息代理
+
+#### 创建连接工厂
+
+在本章中，我们将了解如何采用不同的方式在Spring中使用JMS发送和接收消息。在所有的示例中，我们都需要借助JMS连接工厂通过消息代理发送消息。因为选择了ActiveMQ作为我们的消息代理，所以我们必须配置JMS连接工厂，让它知道如何连接到ActiveMQ。ActiveMQConnectionFactory是ActiveMQ自带的连接工厂，在Spring中可以使用如下方式进行配置：
+
+代码1
+
+> 我们可以使用brokerURL属性来指定代理的URL
+
+配置连接工厂还有另外一种方式，既然我们知道正在与ActiveMQ打交道，那我们就可以使用ActiveMQ自己的Spring配置命名空间来声明连接工厂（适用于ActiveMQ 4.1之后的所有版本）。首先，我们必须确保在Spring的配置文件中声明了amq命名空间：
+
+代码2
+
+注意， \<amq:connectionFactory>元素很明显是为ActiveMQ所准备的。如果我们使用不同的消息代理实现，它们不一定会提供Spring配置命名空间。如果没有提供的话，那我们就需要使用\<bean>来装配连接工厂。
+
+#### 声明ActiveMQ消息目的地
+
+不论使用的是队列还是主题，我们都必须使用特定的消息代理实现类在Spring中配置目的地bean。例如，下面的<bean>声明定义了一个ActiveMQ队列：
+
+代码3
+
+与连接工厂相似的是，ActiveMQ命名空间提供了另一种方式来声明队列和主题。对于队列，我们可以使用\<amq:quence>元素来声明
+
+到此为止，我们已经看到了如何声明使用JMS所需的组件。现在我们已经准备好发送和接收消息了。为此，我们将使用Spring的JmsTemplate——Spring 对JMS支持的核心部分。但是首先，让我们先看看如果没有JmsTemplate，JMS是怎样使用的，以此了解JmsTemplate到底提供了些什么。
+
+### 使用Spring的JMS模板
+
+程序清单17.1　使用传统的JMS（不使用Spring）发送消息
+
+代码4
+
+程序清单17.2　使用传统的JMS（不使用Spring）接收消息
+
+代码5
+
+#### 使用JMS模板
+
+JmsTemplate可以创建连接、获得会话以及发送和接收消息。这使得我们可以专注于构建要发送的消息或者处理接收到的消息。
+
+JmsTemplate可以处理所有抛出的笨拙的JMSException异常。如果在使用JmsTemplate 时抛出 JMSException 异常， JmsTemplate将捕获该异常，然后抛出一个非检查型异常，该异常是Spring自带的JmsException异常的子类。表17.1列出了标准的JMSException异常与Spring的非检查型异常之间的映射关系。
+
+表格1
+
+对于JMS API来说，JMSException的确提供了丰富且具有描述性的子类集合，让我们更清楚地知道发生了什么错误。不过，所有的JMSException异常的子类都是检查型异常，因此必须要捕获。JmsTemplate为我们捕获这些异常，并重新抛出对应非检查型JMSException异常的子类。
+
+为了使用 JmsTemplate，我们需要在Spring的配置文件中将它声明为一个bean。如下的XML可以完成这项工作：
+
+代码6
+
+因为 JmsTemplate需要知道如何连接到消息代理，所以我们必须为connection-Factory属性设置实现了JMS的ConnectionFactory接口的bean引用。
+
+#### 发送消息
+
+为了在Spittle创建的时候异步发送spittle提醒，让我们为Spittr应用引入AlertService ：
+
+代码7
+
+正如我们所看到的，AlertService是一个接口，只定义了一个操作—— sendSpittleAlert() 。
+
+如程序清单17.3所示，AlertServiceImpl 实现了 AlertService接口，它使用JmsOperation （ JmsTemplate所实现的接口）将Spittle对象发送给消息队列，而队列会在稍后得到处理。
+
+代码8
+
+JmsOperations 的 send()方法的第一个参数是JMS目的地名称，标识消息将发送给谁。当调用send() 方法时， JmsTemplate将负责获得JMS连接、会话并代表发送者发送消息（如图17.5所示）。
+
+我们使用 MessageCreator（在这里的实现是作为一个匿名内部类）来构造消息。在MessageCreator 的 createMessage()方法中，我们通过session创建了一个对象消息：传入一个Spittle对象，返回一个对象消息。
+
+就是这么简单！注意，sendSpittleAlert()方法专注于组装和发送消息。在这里没有连接或会话管理的代码，JmsTemplate帮我们处理了所有的相关事项，而且我们也不需要捕获JMSException 异常。 JmsTemplate将捕获抛出的所有JMSException异常，然后重新抛出表17.1所列的某一种非检查型异常。
+
+#### 设置默认目的地
+
+代码9
+
+在这里，将目的地的名称设置为spittle.alert.queue，但它只是一个名称：它并没有说明你所处理的目的地是什么类型。如果已经存在该名称的队列或主题的话，就会使用已有的。如果尚未存在的话，将会创建一个新的目的地（通常会是队列）。但是，如果你想指定要创建的目的地类型的话，那么你可以将之前创建的队列或主题的目的地bean装配进来：
+
+代码10
+
+现在，调用JmsTemplate 的 send()方法时，我们可以去除第一个参数了：
+
+代码11
+
+这种形式的send()方法只需要传入一个MessageCreator。因为希望消息发送给默认目的地，所以我们没有必要再指定特定的目的地。
+
+#### 在发送时，对消息进行转换
+
+除了 send() 方法， JmsTemplate 还提供了 convertAndSend() 方法。与 send()方法不同，convertAndSend()方法并不需要MessageCreator作为参数。这是因为convertAndSend()会使用内置的消息转换器（message converter）为我们创建消息。
+
+当我们使用convertAndSend() 时， sendSpittleAlert()可以减少到方法体中只包含一行代码：
+
+MessageConverter是Spring定义的接口，只有两个需要实现的方法：
+
+代码12
+
+尽管这个接口实现起来很简单，但我们通常并没有必要创建自定义的实现。Spring已经提供了多个实现，如表17.2所示。
+
+表2
+
+默认情况下，JmsTemplate 在 convertAndSend()方法中会使用SimpleMessage Converter。但是通过将消息转换器声明为bean并将其注入到JmsTemplate 的 messageConverter属性中，我们可以重写这种行为。例如，如果你想使用JSON消息的话，那么可以声明一个MappingJacksonMessageConverter bean：
+
+代码13
+
+然后，我们可以将其注入到JmsTemplate中，如下所示：
+
+各个消息转换器可能会有额外的配置，进而实现转换过程的细粒度控制。例如，MappingJacksonMessageConverter能够让我们配置转码以及自定义Jackson ObjectMapper。可以查阅每个消息转换器的JavaDoc以了解如何更加细粒度地配置它们。
+
+#### 接受消息
+
+事实上，使用JmsTemplate接收消息甚至更简单，我们只需要调用JmsTemplate 的 receive()方法即可，如程序清单12.4所示。
+
+当调用 JmsTemplate 的 receive() 方法时， JmsTemplate会尝试从消息代理中获取一个消息。如果没有可用的消息，receive()方法会一直等待，直到获得消息为止。图17.6展示了这个交互过程。
+
+代码14
+
+因为我们知道Spittle消息是作为一个对象消息来发送的，所以它可以在到达后转型为ObjectMessage。然后，我们调用getObject() 方法把 ObjectMessage 转换为 Spittle对象并返回此对象。 
+
+但是这里存在一个问题，我们不得不对可能抛出的JMSException进行处理。正如我已经提到的，JmsTemplate可以很好地处理抛出的JmsException检查型异常，然后把异常转换为Spring非检查型异常JmsException并重新抛出。但是它只对调用JmsTemplate的方法时才适用。JmsTemplate无法处理调用ObjectMessage 的 getObject()方法时所抛出的JMSException 异常。
+
+因此，我们要么捕获JMSException异常，要么声明本方法抛出JMSException异常。为了遵循Spring规避检查型异常的设计理念，我们不建议本方法抛出JMSException异常，所以我们选择捕获该异常。在catch代码块中，我们使用Spring中JmsUtils的convertJmsAccessException()方法把检查型异常JMSException转换为非检查型异常JmsException。这其实是在其他场景中由JmsTemplate为我们做的事情。
+
+##### 使用接收消息转换器
+
+代码15
+
+现在，没有必要将Message 转换为 ObjectMessage，也没有必要通过调用getObject() 来获取 Spittle，更无需担心检查型的JMSException异常。
+
+但使用 JmsTemplate接收消息的最大缺点在于receive() 和 receiveAndConvert()方法都是同步的。这意味着接收者必须耐心等待消息的到来，因此这些方法会一直被阻塞，直到有可用消息（或者直到超时）。同步接收异步发送的消息，是不是感觉很怪异？ 
+
+这就是消息驱动POJO的用武之处。让我们看看如何使用能够响应消息的组件异步接收消息，而不是一直等待消息的到来。
+
+### 创建消息驱动的POJO
+
+#### 创建消息监听器
+
+Spring提供了以POJO的方式处理消息的能力，这些消息来自于JMS的队列或主题中。例如，基于POJO实现SpittleAlertHandler就足以做到这一点。
+
+程序清单17.5　Spring MDP异步接收和处理消息
+
+代码16
+
+#### 配置消息监听器
+
+为POJO赋予消息接收能力的诀窍是在Spring中把它配置为消息监听器。Spring的jms命名空间为我们提供了所需要的一切。首先，让我们先把处理器声明为bean ：
+
+代码17
+
+然后，为了把SpittleAlertHandler转变为消息驱动的POJO，我们需要把这个bean声明为消息监听器：
+
+代码18
+
+在这里，我们在消息监听器容器中包含了一个消息监听器。消息监听器容器（message listener container）是一个特殊的bean，它可以监控JMS目的地并等待消息到达。一旦有消息到达，它取出消息，然后把消息传给任意一个对此消息感兴趣的消息监听器。 
+
+图1
+
+图17.7　消息监听器容器监听队列和主题。 当消息到达时，消息将转给消息监听器（例如消息驱动的POJO）
+
+[美] Craig Walls. Spring实战（第4版） (Kindle 位置 8204-8205). 人民邮电出版社. Kindle 版本. 
+
+为了在Spring中配置消息监听器容器和消息监听器，我们使用了Spring jms命名空间中的两个元素。<jms:listener-container> 中包含了 <jms:listener>元素。这里的connection-factory属性配置了对connectionFactory的引用，容器中的每个<jms:listener>都使用这个连接工厂进行消息监听。在本示例中，connection-factory属性可以移除，因为该属性的默认值就是connectionFactory 。
+
+对于 <jms:listener>元素，它用于标识一个bean和一个可以处理消息的方法。为了处理Spittle提醒消息，ref元素引用了spittleHandler bean。当消息到达spitter.alert.queue队列（通过destination属性配置）时，spittleHandlerbean的handleSpittleAlert()方法（通过method属性指定的）会被触发。
+
+值得一提的是，如果ref属性所标示的bean实现了MessageListener，那就没有必要再指定method属性了，默认就会调用onMessage() 方法。
+
+### 使用基于消息的RPC
+
+为了支持基于消息的RPC，Spring提供了JmsInvokerServiceExporter，它可以把bean导出为基于消息的服务；为客户端提供了JmsInvokerProxyFactoryBean来使用这些服务。
+
+#### 导出基于JMS的服务
+
+程序清单17.6　AlertServiceImpl是一个处理JMS消息的POJO，但是不依赖于JMS
+
+代码19
+
+AlertService接口
+
+代码20
+
+正如我们所看到的，AlertServiceImpl 使用了 @Component注解来标注，所以它会被Spring自动发现并注册为Spring应用上下文中ID为alertService的bean。在配置JmsInvokerServiceExporter时，我们将引用这个bean：
+
+代码21
+
+这个bean的属性描述了导出的服务应该是什么样子的。service属性设置为alertServicebean的引用，它是远程服务的实现。同时，serviceInterface属性设置为远程服务对外提供接口的全限定类名。
+
+导出器的属性并没有描述服务如何基于JMS通信的细节。但好消息是JmsInvokerServiceExporter可以充当JMS监听器。因此，我们使用\<jms:listenercontainer>元素配置它：
+
+代码22
+
+我们为JMS监听器容器指定了连接工厂，所以它能够知道如何连接消息代理，而\<jms:listener>声明指定了远程消息的目的地。
+
+#### 使用基于JMS的服务
+
+这时候，基于JMS的提醒服务已经准备好了，等待队列中名字为spitter.alert.queue的RPC消息到达。在客户端，JmsInvokerProxyFactoryBean用来访问服务。
+
+ JmsInvokerProxyFactoryBean很类似于我们在第15章中所讨论的其他远程代理工厂bean。它隐藏了访问远程服务的细节，并提供一个易用的接口，通过该接口客户端与远程服务进行交互。与代理RMI服务或HTTP服务的最大区别在于，JmsInvokerProxy-FactoryBean代理了通过JmsInvokerServiceExporter所导出的JMS服务。
+
+为了使用提醒服务，我们可以像下面那样配置JmsInvokerProxyFactoryBean ：
+
+代码23
+
+connectionFactory 和 queryName属性指定了RPC消息如何被投递——在这里，也就是在给定的连接工厂中，我们所配置的消息代理里面名为spitter.alert.queue的队列。对于serviceInterface，指定了代理应该通过AlertService接口暴露功能。
+
+## 使用AMQP实现消息功能
+
+实际上，AMQP具有多项JMS所不具备的优势。首先，AMQP为消息定义了线路层（wire-level protocol）的协议，而JMS所定义的是API规范。JMS的API协议能够确保所有的实现都能通过通用的API来使用，但是并不能保证某个JMS实现所发送的消息能够被另外不同的JMS实现所使用。而AMQP的线路层协议规范了消息的格式，消息在生产者和消费者间传送的时候会遵循这个格式。这样AMQP在互相协作方面就要优于JMS——它不仅能跨不同的AMQP实现，还能跨语言和平台。[2]
+
+相比JMS，AMQP另外一个明显的优势在于它具有更加灵活和透明的消息模型。使用JMS的话，只有两种消息模型可供选择：点对点和发布-订阅。这两种模型在AMQP当然都是可以实现的，但AMQP还能够让我们以其他的多种方式来发送消息，这是通过将消息的生产者与存放消息的队列解耦实现的。
+
+与之不同的是，AMQP的生产者并不会直接将消息发布到队列中。AMQP在消息的生产者以及传递信息的队列之间引入了一种间接的机制：Exchange。这种关系如图17.8所示。
+
+图3
+
+可以看到，消息的生产者将信息发布到一个Exchange。Exchange会绑定到一个或多个队列上，它负责将信息路由到队列上。信息的消费者会从队列中提取数据并进行处理。
+
+图17.8所没有展现出来的一点是Exchange不是简单地将消息传递到队列中，并不仅仅是一种穿透（pass-through）机制。AMQP定义了四种不同类型的Exchange，每一种都有不同的路由算法，这些算法决定了是否要将信息放到队列中。根据Exchange的算法不同，它可能会使用消息的routing key和/或参数，并将其与Exchange和队列之间binding的routing key和参数进行对比。（routing key可以大致理解为Email的收件人地址，指定了预期的接收者。）如果对比结果满足相应的算法，那么消息将会路由到队列上。否则的话，将不会路由到队列上。
+
+四种标准的AMQP Exchange如下所示： 
+
+- Direct：如果消息的routing key与binding的routing key直接匹配的话，消息将会路由到该队列上； 
+- Topic：如果消息的routing key与binding的routing key符合通配符匹配的话，消息将会路由到该队列上； 
+- Headers：如果消息参数表中的头信息和值都与bingding参数表中相匹配，消息将会路由到该队列上； 
+- Fanout：不管消息的routing key和参数表的头信息/值是什么，消息将会路由到所有队列上。 
+
+借助这四种类型的Exchange，很容易就能想到我们可以定义任意数量的路由模式，而不再仅限于点对点和发布-订阅的方式。[3]好消息是，当发送和接收消息的时候，所涉及的路由算法对于如何编写消息的生产者和消费者并没有什么影响。简单来讲，生产者将信息发送给Exchange并带有一个routing key，消费者从队列中获取消息。
+
+### 配置Spring支持AMQP消息
+
+当我们第一次使用Spring JMS抽象的时候，首先配置了一个连接工厂。与之类似，使用Spring AMQP前也要配置一个连接工厂。只不过，所要配置的不是JMS的连接工厂，而是需要配置AMQP的连接工厂。更具体来讲，需要配置RabbitMQ连接工厂。
+
+RabbitMQ是一个流行的开源消息代理，它实现了AMQP。Spring AMQP为RabbitMQ提供了支持，包括RabbitMQ连接工厂、模板以及Spring配置命名空间。
+
+配置RabbitMQ连接工厂最简单的方式就是使用Spring AMQP所提供的rabbit配置命名空间。为了使用这项功能，需要确保在Spring配置文件中已经声明了该模式：
+
+代码24
+
+尽管不是必须的，但我还选择在这个配置中将rabbit作为首选的命名空间，将beans作为第二位的命名空间。这是因为在这个配置中，我会更多的声明rabbit而不是bean，这样的话，只会有少量的bean元素使用“beans:”前缀，而rabbit元素就能够避免使用前缀了。
+
+##### 配置连接工厂
+
+代码25
+
+我们使用占位符来指定值，这样配置项可以在Spring配置文件之外进行管理（很可能位于属性文件中）。
+
+#### 声明队列、Exchange以及binding
+
+rabbit命名空间包含了多个元素，帮助我们声明队列、Exchange以及将它们结合在一起的binding。表17.3中列出了这些元素。
+
+表3
+
+这些配置元素要与<admin>元素一起使用。<admin>元素会创建一个RabbitMQ管理组件（administrative component），它会自动创建（如果它们在RabbitMQ代理中尚未存在的话）上述这些元素所声明的队列、Exchange以及binding。
+
+例如，如果你希望声明名为spittle.alert.queue的队列，只需要在Spring配置中添加如下的两个元素即可：
+
+代码26
+
+#### 使用RabbitTemplate发送消息
+
+配置 RabbitTemplate的最简单方式是使用rabbit命名空间的<template>元素，如下所示：
+
+代码27
+
+现在，要发送消息的话，我们只需要将模板bean注入到AlertServiceImpl中，并使用它来发送Spittle。如下的程序清单展现了一个新版本的AlertServiceImpl ，它使用 RabbitTemplate 代替 JmsTemplate 来发送 Spittle 提醒。
+
+代码28
+
+可以看到，现在sendSpittleAlert() 调用 RabbitTemplate 的 convertAndSend()方法，其中RabbitTemplate是被注入进来的。它传入了三个参数：Exchange的名称、routing key以及要发送的对象。注意，这里并 没有 指定消息该路由到何处、要发送给哪个队列以及期望哪个消费者来获取消息。
+
+如果在参数列表中省略Exchange名称，或者同时省略Exchange名称和routing key的话，RabbitTemplate将会使用默认的Exchange名称和routing key。按照我们之前的配置，默认的Exchange名称为空（或者说是默认没有名称的那一个Exchange），默认的routing key也为空。但是，我们可以在<template>元素上借助exchange 和 routing-key属性配置不同的默认值：
+
+代码29
+
+不管设置的默认值是什么，我们都可以在调用convertAndSend()方法的时候，以参数的形式显式指定它们，从而覆盖掉默认值。
+
+RabbitTemplate还有其他的方法来发送消息，你可能会对此感兴趣。例如，我们可以使用较低等级的send()方法来发送org.springframework.amqp.core.Message对象，如下所示：
+
+代码30
+
+与 convertAndSend()方法类似，send()方法也有重载形式，它们不需要提供Exchange名称和/或routing key。
+
+使用 send()方法的技巧在于构造要发送的Message对象。在这个“Hello World”样例中，我们通过给定字符串的字节数组来构建Message实例。对于String值来说，这足够了，但是如果消息的负载是复杂对象的话，那它就会复杂得多。
+
+鉴于这种情况，我们有了convertAndSend()方法，它会自动将对象转换为Message。它需要一个消息转换器的帮助来完成该任务，默认的消息转换器是SimpleMessageConverter，它适用于String 、 Serializable实例以及字节数组。Spring AMQP还提供了其他几个有用的消息转换器，其中包括使用JSON和XML数据的消息转换器。
+
+### 接受AMQP消息
+
+#### 使用RabbitTemplate来接受消息
+
+RabbitTemplate提供了多个接收信息的方法。最简单就是receive()方法，它位于消息的消费者端，对应于RabbitTemplate 的 send()方法。借助receive()方法，我们可以从队列中获取一个Message 对象：
+
+代码31
+
+或者，如果愿意的话，你还可以配置获取消息的默认队列，这是通过在配置模板的时候，设置queue属性实现的：
+
+代码32
+
+这样的话，我们在调用receive()方法的时候，不需要设置任何参数就能从默认队列中获取消息了：
+
+代码33
+
+在获取到 Message对象之后，我们可能需要将它body属性中的字节数组转换为想要的对象。就像在发送的时候将领域对象转换为Message一样，将接收到的Message转换为领域对象同样非常繁琐。因此，我们可以考虑使用RabbitTemplate 的receiveAndConvert()方法作为替代方案：
+
+代码34
+
+我们还可以省略调用参数中的队列名称，这样它就会使用模板的默认队列名称：
+
+代码35
+
+receiveAndConvert()方法会使用与sendAndConvert()方法相同的消息转换器，将Message对象转换为原始的类型。
+
+调用 receive() 和 receiveAndConvert()方法都会立即返回，如果队列中没有等待的消息时，将会得到null。这就需要我们来管理轮询（polling）以及必要的线程，实现队列的监控。
+
+#### 定义消息驱动的AMQP POJO
+
+定义一个类SpittleAlertHandler：
+
+代码36
+
+注意，这个类与借助JMS消费Spittle 时所用到 SpittleAlertHandler完全一致。我们之所以能够重用相同的POJO是因为这个类丝毫没有依赖于JMS或AMQP，并且不管通过什么机制传递过来Spittle对象，它都能够进行处理。
+
+我们还需要在Spring应用上下文中将SpittleAlertHandler声明为一个bean：
+
+代码37
+
+最后，我们需要声明一个监听器容器和监听器，当消息到达的时候，能够调用SpittleAlertHandler。在基于JMS的MDP中，我们做过相同的事情，但是基于AMQP的MDP在配置上有一个细微的差别：
+
+代码38
+
+你看到有什么差别了吗？我也同意这并不那么明显。\<listener-container> 与 \<listener>都与JMS对应的元素非常类似。但是，这些元素来自rabbit命名空间，而不是JMS命名空间。
+
+哦，还有一个细微的差别，我们不再通过destination属性（JMS中的做法）来监听队列或主题，这里我们通过queue-names属性来指定要监听的队列。但是，除此之外，基于AMQP的MDP与基于JMS的MDP都非常类似。
+
+你可能也意识到了，queue-names属性的名称使用了复数形式。在这里我们只设定了一个要监听的队列，但是允许设置多个队列的名称，用逗号分割即可。 
+
+另外一种指定要监听队列的方法是引用<queue>元素所声明的队列bean。我们可以通过queues属性来进行设置：
+
+代码39
+
+同样，这里可以接受逗号分割的queue ID列表。当然，这需要我们在声明队列的时候，为其指定ID。例如，如下是重新定义的提醒队列，这次指定了ID：
+
+代码40
+
+注意，这里的id属性用来在Spring应用上下文中设置队列的bean ID，而name属性指定了RabbitMQ代理中队列的名称。
