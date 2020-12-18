@@ -13,7 +13,13 @@
 
 1. info页面
    1. 动态柱状图--MaGiC Cases in different Genes修改为根据页面大小自适应
-   2. Data Curated部分的分为两个部分，页面大小变化后，需要对其边框并调节好边距
+   2. :heavy_check_mark:Data Curated部分的分为两个部分，页面大小变化后，需要对其边框并调节好边距
 2. 初始Search页面
    1. :heavy_check_mark:页面的表格变形需要修改；
-   2. 页面的高度也变形了
+   2. :heavy_check_mark:页面的高度也变形了
+
+#### 12月17号
+
+1.info页面的第一张图变形，比例不对
+
+2.search页面的By chromosome搜索出来的图片高度不对

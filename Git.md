@@ -8,8 +8,11 @@
 
 在创建仓库的时候，*master* 是“默认的”分支。在其他分支上进行开发，完成后再将它们合并到主分支上
 
+修改本地仓库上的文件夹名，只要关闭了`Git Bash`就可以操作，如果显示程序忙，可能需要到任务栏把进程关了。
+
 #### 推送改动
 `git status`/`git log`查看文件发现中文文件名都为十进制数字，这是文件名被转化了，配置下`git config --global core.quotepath false`就可以了
+
 ### 1.安装设置
 
 安装完Git后，在安装目录，有个文件夹`[path]etc/gitconfig`,这个文件夹呢，就是用来给Git设置环境变量的，这个是系统环境变量（针对所有用户所有仓库），只要安装了Git，就肯定有；除了这个，还有全局变量（只针对某个用户的，这个用户的所有仓库），一般在`~/.gitconfig` 或者`~/.config/git/config`；还有本地变量（针对某个用户单一仓库），放在`.git/config`;
@@ -77,7 +80,14 @@ $ git clone https://github.com/libgit2/libgit2
 $ git clone https://github.com/libgit2/libgit2 mylibgit
 ```
 
-克隆仓库，一般会在所操作的目录直接生成一个以\<url>结尾字段为名的仓库，当然也可以自己指定，在\<url> 后面添加参数（文件名）就可以
+克隆仓库，一般会在所操作的目录直接生成一个以\<url>结尾字段为名的仓库，当然也可以自己指定，在\<url> 后面添加参数（文件名）就可以;
+
+##### 克隆他人的仓库
+
+想克隆其他人的仓库，但是发现没办法通过SSH方式克隆，但是呢？使用HTTPS的方式克隆就可以。
+
+- 想通过SSH方式克隆可先fork项目到自己的账号下，再添加远程到本地就可以实现克隆了，也能够推送提交到远程仓库上
+- 通过HTTPS方式克隆，无法添加远程到本地，故也就不能够推送提交到远程仓库上了
 
 ### 4.检查文件的状态
 
@@ -465,5 +475,82 @@ git branch --all
 $ git push origin --delete master
 ```
 
-### 6.Branching Workflows
+### 6.远程分支
 
+#### Pushing
+
+```bash
+$ git push origin serverfix			#默认远程分支为serverfix
+$ git push origin serverfix:serverfix
+```
+
+以上两条命令功能相同，推送本地分支--serverfix到远程分支--serverfix上
+
+```bash
+$ git fetch origin					#从远程分支获取数据
+$ git merge origin/serverfix		#合并远程origin.serverfix分支
+```
+
+以上从远程分支--serverfix获取数据，如果本地没有这个serverfix分支，本地并不会新建一个新的分支--serverfix，就算有也需要自己合并它们；
+
+最好的办法是自己新建一个serverfix分支并关联它们，如下
+
+```bash
+$ git checkout -b serverfix origin/serverfix
+```
+
+#### Tracking Branches
+
+其实Tracking Branches就是对于远程分支，再本地的关联分支;
+
+而Upstream则表示远程服务分支
+
+```bash
+$ git checkout -b serverfix origin/serverfix
+$ git checkout --track origin/serverfix		#简写方式
+$ git checkout serverfix			#需要满足条件
+```
+
+以上三条命令的功能相同，都是新建关联远程分支--origin/serverfix的本地分支--serverfix，其中第三条命令需要满足的条件是：本地没有serverfix分支，但是有个远程分支名跟serverfix匹配
+
+```bash
+$ git checkout -b sf origin/serverfix	#设置别名，而非默认的serverfix
+```
+
+```bash
+$ git branch -u origin/serverfix
+$ git branch --set-upstream-to origin/serverfix
+```
+
+修改关联的远程分支或者设置当前分支关联远程分支
+
+```bash
+$ git branch -vv			#查看目前本地分支及其远程关联
+$ git fetch --all; git branch -vv   #获取最新更新消息
+```
+
+使用`git branch -vv`会显示更新的提交数和落后数，但这是根据上次你`git fetch`后获得的远程更新信息，或许这时候已经改变了，故，可以再执行之前，先`git fetch --all`获取最新的更新
+
+#### Pulling
+
+除了使用`git fetch `拉取数据，还可以用`git pull`，再重申一遍，`git pull`拉取数据后会顺便合并分支；不过一般还是使用`git fetch`拉取数据，比较号，`git pull`经常会失败。
+
+#### Delete Remote Branches
+
+```bash
+$ git push origin --delete serverfix
+```
+
+## Git Branching - Rebasing
+
+
+
+## github协同办公
+
+### 参与者模式
+
+需要原创者到原始仓库，进入`Setting`中的`Manage access`，然后通过`Invite a collaborate`来邀请参与者，这样，所有同意邀请的参与者就都有权限来推送更新到原始仓库了。
+
+### fork模式
+
+参与者Fork原始github上的仓库到自己仓库，修改后或者更新后，到github官网上，登录自己的账号，然后到自己这个Fork的仓库，然后使用`Pull requests`推送更新到原始仓库；
