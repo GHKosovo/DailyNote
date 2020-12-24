@@ -409,7 +409,7 @@ $ git branch -d hotfix			#删除hotfix分支
 $ git mergetool					
 ```
 
-如果合并分支的时候出现冲突，这时候可以自己修改文件，解决这些冲突；或者是像上面一样，调用解决冲突的方法`git mergetool`来更加便捷地处理冲突
+如果**合并分支的时候出现冲突**，这时候可以自己修改文件，解决这些冲突；或者是像上面一样，调用解决冲突的方法`git mergetool`来更加便捷地处理冲突
 
 ### 4.分支管理
 
@@ -431,11 +431,15 @@ $ git branch --no-merged master	#显示没有加入到master分支的分支
 > 当其他合作者正在某个分支上工作时，不能修改该分支名；修改master/main/mainline等分支要注意，请参阅“Changing the master branch name”
 
 ```bash
-#修改本地分支
+#修改本地分支名
 $ git branch --move bad-branch-name corrected-branch-name
-
 #修改远程分支，只是在远程服务器上添加一个新的分支而已，所以原先的分支还在
+
 $ git push --set-upstream origin corrected-branch-name
+$ git push --u origin corrected-branch-name
+#让本地分支关联远程origin上的某个分支,比如dev
+#以后推送只需要给 git push origin就直接推送到origin/dev
+
 $ git push origin --delete bad-branch-name	#删除错误分支
 ```
 
@@ -501,7 +505,7 @@ $ git checkout -b serverfix origin/serverfix
 
 #### Tracking Branches
 
-其实Tracking Branches就是对于远程分支，再本地的关联分支;
+其实Tracking Branches就是对于远程分支，在本地的关联分支;
 
 而Upstream则表示远程服务分支
 
@@ -543,7 +547,49 @@ $ git push origin --delete serverfix
 
 ## Git Branching - Rebasing
 
+其实这是一种跟`git merge`类似功能的分支功能
 
+他的特点是：把分支的提交内容作为新的提交添加到主线分支上，也就是说**在主分支上新添加一个提交**，
+
+```bash
+$ git checkout experiment		#定位到其他分支
+$ git rebase master				#基准主分支
+
+$ git checkout master			#重新回到主分支
+$ git merge experiment			#合并其他分支到主分支
+```
+
+> `rebase`跟`merge`不同的点：
+>
+> 主要在`merge`需要定位到主分支上，然后**以主分支为准**，利用merge 合并其他分支；
+>
+> 而rebase则是以**其他分支为准**，利用rebase，重新设定主分支
+
+```bash
+# 把client分支重新设定到主分支master上，而不改变server分支状态
+$ git rebase --onto master server client
+
+#把server分支重新设定到主分支master上
+$ git rebase master server
+```
+
+> 不管是使用`rebase`还是`merge`都不会删除分支，而只是把分支的内容设定到新的提交上
+
+### rebase的风险
+
+如果参与者在远程分支上新建一个项目，然后你拉取了项目信息，之后它撤销了一些提交后重新设定主分支，那么当你下次再次拉去信息的时候就会出现一些重复性的内容，严重的可能回导致错误发生。具体参考案例在[这里](https://git-scm.com/book/en/v2/Git-Branching-Rebasing)
+
+当这种事情发生的时候，可以通过以下方法来让本地分支重新关联修改后(rebase)的远程主分支
+
+```bash
+$ git rebase origin/master
+
+$ git pull --rebase
+
+$ git fetch origin/master git rebase origin/master
+```
+
+以上三种处理方法的结果都一样，在本地仓库，修改远程为重新设定的状态后，再添加新的提交内容到重新设定主分支上
 
 ## github协同办公
 

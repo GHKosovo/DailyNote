@@ -23,3 +23,12 @@
 1.info页面的第一张图变形，比例不对
 
 2.search页面的By chromosome搜索出来的图片高度不对
+
+### 12月22号
+
+download那里  你搞个小表格
+
+- whole MaGiC  database : Download（下载链接）
+- Cell Paper : Download（下载链接，这个pdf问一下大侠拿）
+- Cell Paper supplement: Download（下载链接，这个excel表格问一下大侠拿）
+
