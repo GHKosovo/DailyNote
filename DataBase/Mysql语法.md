@@ -28,9 +28,15 @@
 - 更改字段名：as + 新字段名/空格后+新字段名
 - 限制行数：limit+行数
 - 选取介于两个值之间的数据范围：between...and(在where中使用)
-- 判断语句：case when condition than result1 else result2 end
+- 判断语句：case when condition then result1 else result2 end
 - Null值：无法与0比较，也无法使用比较运算符，需要用IS NULL 和 IS NOT NULL
 - 排除某个字段：<> (在where中使用)
+
+> 以下两个语句是相同的功能
+>
+> case id when '01' then 1 else 0 end 
+>
+> case when id = '01' then 1 else 0 end 
 
 #### 方法函数
 

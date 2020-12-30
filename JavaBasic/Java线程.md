@@ -1,6 +1,6 @@
 ## 进程和线程
 
-进程是执行着的应用程序，而线程是进程内部的一个执行序列。一个进程可以有多个线程。线程又叫做轻量级进程。
+进程是执行着的应用程序或者程序，而线程是进程内部的一个执行序列。一个进程可以有多个线程，每个线程并行执行不同的任务。不同的进程使用不同的内存空间，而所有的线程共享一片相同的内存空间。线程又叫做轻量级进程。
 
 区别：
 
@@ -10,14 +10,18 @@
 
 **c.调度和切换**：线程上下文切换比进程上下文切换要快得多。
 
-## 定义线程
+## 创建/定义线程
 
-1. 实现runnable接口（需要写构造函数）
-2. 继承Thread类（重写run方法）
+1. 实现Runnable接口（需要写构造函数），实现run方法
+2. 继承Thread类，重写run方法
+3. 使用Callable和Future创建线程
+4. 实现线程池，比如Executor框架
 
 ### 实例化线程
 
-- 使用**实现runnable接口**的方法，则用Thread的构造方法
+#### 使用**实现runnable接口**的方法，
+
+则用Thread的构造方法，然后把实现Runnable接口的对象赋值给Thread的构造方法
 
 Thread(Runnable target)
 Thread(Runnable target, String name)
@@ -25,11 +29,207 @@ Thread(ThreadGroup group, Runnable target)
 Thread(ThreadGroup group, Runnable target, String name)
 Thread(ThreadGroup group, Runnable target, String name, long stackSize)
 
-- 使用**继承Thread类**的方法，直接new一个Thread对象
+#### 使用**继承Thread类**的方法，
+
+直接new一个Thread对象
+
+#### 使用Callable和Future创建线程
+
+Callable接口只有一个方法，即call()方法，它有返回值，也可以声明抛出异常；
+
+而Future接口则可以获取Callable接口里call()方法的返回值，以下是关于Future接口的方法
+
+```java
+boolean cancel(boolean mayInterruptIfRunning)：视图取消该Future里面关联的Callable任务
+
+V get()：返回Callable里call（）方法的返回值，调用这个方法会导致程序阻塞，必须等到子线程结束后才会得到返回值
+
+V get(long timeout,TimeUnit unit)：返回Callable里call（）方法的返回值，最多阻塞timeout时间，经过指定时间没有返回抛出TimeoutException
+
+boolean isDone()：若Callable任务完成，返回True
+
+boolean isCancelled()：如果在Callable任务正常完成前被取消，返回True
+```
+
+FutureTask则是Future接口的实现类，同时它也是Runnable接口的实现类，所有它可以作为**Thread类的target**。Future本身会通过callable来构造，也可以通过runnable来构造，不过最后也都是转化为callable对象（实现runnable接口的对象被转化为callable对象），最终都是FutureTask调用Future接口来获取callable对象（异步执行的结果）它的返回值。
+
+案例如下：
+
+```java
+步骤1：创建实现Callable接口的类SomeCallable<Integer>（略）；
+
+步骤2：创建一个类对象：
+
+      Callable<Integer> oneCallable = new SomeCallable<Integer>();
+
+步骤3：由Callable<Integer>创建一个FutureTask<Integer>对象：
+
+      FutureTask<Integer> oneTask = new FutureTask<Integer>(oneCallable);
+
+      注释：FutureTask<Integer>是一个包装器，它通过接受Callable<Integer>来创建，它同时实现了Future和Runnable接口。
+步骤4：由FutureTask<Integer>创建一个Thread对象：
+
+       Thread oneThread = new Thread(oneTask);
+
+步骤5：启动线程：
+
+       oneThread.start();
+
+至此，一个线程就创建完成了。
+```
+
+使用 FutureTask 的好处是 FutureTask 是为了弥补 Thread 的不足而设计的，它可以让程序员准确地知道线程什么时候执行完成并获得到线程执行完成后返回的结果。FutureTask 是一种可以取消的异步的计算任务，它的计算是通过 Callable 实现的，它等价于可以携带结果的 Runnable，并且有三个状态：等待、运行和完成。完成包括所有计算以任意的方式结束，包括正常结束、取消和异常。
+
+#### 多线程
+
+多线程的概念很好理解就是多条线程同时存在，但是多线程涉及到多线程通信和共用资源的问题，不容易使用。
+
+优点：
+ 1）适当的提高程序的执行效率（多个线程同时执行）。
+ 2）适当的提高了资源利用率（CPU、内存等）。
+ 缺点：
+ 1）占用一定的内存空间。
+ 2）线程越多CPU的调度开销越大。
+ 3）程序的复杂度会上升。
+
+##### Synchronized
+
+多线程会涉及到同步问题，Synchronized就会经常用到，所有加上 synchronized 的方法和块语句，在多线程访问的时候，同一时刻只能有一个线程能够访问。
+
+##### wait()、notify()、notifyAll()
+
+这三个方法是Object类的方法，它们实现线程间阻塞和控制进程内调度的底层机制。
+
+wait()：
+ 导致线程进入等待状态，直到它被其他线程通过notify()或者notifyAll唤醒，该方法只能在同步方法中调用。
+
+notify()：
+ 随机选择一个在该对象上调用wait方法的线程，解除其阻塞状态，该方法只能在同步方法或同步块内部调用。
+
+notifyAll()：
+ 解除所有那些在该对象上调用wait方法的线程的阻塞状态，同样该方法只能在同步方法或同步块内部调用。
+
+调用这三个方法中任意一个，当前线程必须是锁的持有者，如果不是会抛出一个 IllegalMonitorStateException 异常。
+
+##### wait() 与 Thread.sleep(long time) 的区别
+
+sleep()：在指定的毫秒数内让**当前正在执行的线程休眠**（暂停执行），**该线程不丢失任何监视器的所属权**；sleep() 方法使持有的线程暂停运行，从而使线程进入休眠状态，直到用 interrupt 方法来打断他的休眠或者 sleep 的休眠的时间到。sleep() 是 Thread 类专属的静态方法，针对一个特定的线程。
+ wait() 方法使**实体所处线程暂停执行**，从而使对象进入等待状态，直到被 notify() 方法通知或者 wait() 的等待的时间到。
+
+ wait() 方法进入等待状态时会释放同步锁，而 sleep() 方法不会释放同步锁。所以，当一个线程无限 sleep 时又没有任何人去 interrupt 它的时候，程序就产生大麻烦了，notify() 是用来通知线程，但在 notify() 之前线程是需要获得 lock 的。另个意思就是必须写在 synchronized(lockobj) {...} 之中。wait() 也是这个样子，一个线程需要释放某个 lock，也是在其获得 lock 情况下才能够释放，所以 wait() 也需要放在 synchronized(lockobj) {...} 之中。
+
+##### join() 方法
+
+join() 方法定义在 Thread 类中，所以调用者必须是一个线程，join() 方法主要是让调用该方法的 Thread 完成 run() 方法里面的东西后，再执行 join() 方法后面的代码
+
+##### Thread.yield() 方法
+Thread.sleep(long time)：线程暂时终止执行（睡眠）一定的时间。
+Thread.yield()：线程放弃运行，将CPU的控制权让出。
+
+这两个方法都会将当前运行线程的CPU控制权让出来，但 sleep() 方法在指定的睡眠时间内一定不会再得到运行机会，直到它的睡眠时间完成；而 yield() 方法让出控制权后，还有可能马上被系统的调度机制选中来运行，比如，执行yield()方法的线程优先级高于其他的线程，那么这个线程即使执行了 yield() 方法也可能不能起到让出CPU控制权的效果，因为它让出控制权后，进入排队队列，调度机制将从等待运行的线程队列中选出一个等级最高的线程来运行，那么它又（很可能）被选中来运行。
+
+更多关于多线程的内容在[这里](https://www.jianshu.com/p/b8197dd2934c)
+
+#### 使用线程池
+
+使用线程池的优点
+
+1）避免线程的创建和销毁带来的性能开销。
+2）避免大量的线程间因互相抢占系统资源导致的阻塞现象。
+3）能够对线程进行简单的管理并提供定时执行、间隔执行等功能。
+
+Executor框架的最大优点是把任务的提交和执行解耦。要执行任务的人只需把Task描述清楚，然后提交即可。
+
+这个Task是怎么被执行的，被谁执行的，什么时候执行的，提交的人就不用关心了。具体点讲，提交一个**Callable对象**给**ExecutorService**（如最常用的线程池ThreadPoolExecutor），将得到一个**Future对象**，调用Future对象的get方法等待执行结果就好了。Executor框架的内部使用了线程池机制，它在java.util.cocurrent 包下，通过该框架来控制线程的启动、执行和关闭，可以简化并发编程的操作。
+
+因此，在Java 5之后，通过Executor来启动线程比使用Thread的start方法更好，除了更易管理，效率更好（用线程池实现，节约开销）外，还有关键的一点：有助于避免this逃逸问题——如果我们在构造器中启动一个线程，因为另一个任务可能会在构造器结束之前开始执行，此时可能会访问到初始化了一半的对象用Executor在构造器中。
+
+Executor框架包括：线程池，Executor，Executors，ExecutorService，CompletionService，Future，Callable等。
+
+**Executor接口**中之定义了一个方法**execute（Runnable command）**，该方法接收一个**Runable实例**，它用来执行一个任务，任务即一个实现了Runnable接口的类。ExecutorService接口继承自Executor接口，它提供了更丰富的实现多线程的方法，比如，ExecutorService提供了关闭自己的方法，以及可为跟踪一个或多个异步任务执行状况而生成 Future 的方法。 可以调用ExecutorService的shutdown（）方法来平滑地关闭 ExecutorService，调用该方法后，将导致ExecutorService停止接受任何新的任务且等待已经提交的任务执行完成(已经提交的任务会分两类：一类是已经在执行的，另一类是还没有开始执行的)，当所有已经提交的任务执行完毕后将会关闭ExecutorService。因此我们一般用该接口来实现和管理多线程。
+
+ExecutorService的生命周期包括三种状态：运行、关闭、终止。创建后便进入运行状态，当调用了shutdown（）方法时，便进入关闭状态，此时意味着ExecutorService不再接受新的任务，但它还在执行已经提交了的任务，当素有已经提交了的任务执行完后，便到达终止状态。如果不调用shutdown（）方法，ExecutorService会一直处在运行状态，不断接收新的任务，执行新的任务，服务器端一般不需要关闭它，保持一直运行即可。
+
+**Executors**提供了一系列工厂方法用于创先线程池，返回的线程池都实现了ExecutorService接口。   
+
+```java
+	public static ExecutorService newFixedThreadPool(int nThreads)
+
+//	创建固定数目线程的线程池。
+
+    public static ExecutorService newCachedThreadPool()
+
+//   创建一个可缓存的线程池，调用execute将重用以前构造的线程（如果线程可用）。如果现有线程没有可用的，则创建一个新线   程并添加到池中。终止并从缓存中移除那些已有 60 秒钟未被使用的线程。
+
+    public static ExecutorService newSingleThreadExecutor()
+
+//   创建一个单线程化的Executor。
+
+    public static ScheduledExecutorService newScheduledThreadPool(int corePoolSize)
+
+//   创建一个支持定时及周期性的任务执行的线程池，多数情况下可用来替代Timer类。
+```
+
+这四种方法都是用的Executors中的ThreadFactory建立的线程
+
+#### 案例
+
+通过**Executors**的以上四个静态工厂方法获得 ExecutorService实例，而后调用该实例的execute（Runnable command）方法即可。一旦Runnable任务传递到execute（）方法，该方法便会自动在一个线程上
+
+```java
+import java.util.concurrent.ExecutorService;   
+import java.util.concurrent.Executors;  
+
+public class TestCachedThreadPool{   
+    public static void main(String[] args){   
+        ExecutorService executorService = Executors.newCachedThreadPool();   
+//      ExecutorService executorService = Executors.newFixedThreadPool(5);  
+//      ExecutorService executorService = Executors.newSingleThreadExecutor();  
+        for (int i = 0; i < 5; i++){   
+            executorService.execute(new TestRunnable());   
+            System.out.println("************* a" + i + " *************");   
+        }   
+        executorService.shutdown();   
+    }   
+}   
+  
+class TestRunnable implements Runnable{   
+    public void run(){   
+        System.out.println(Thread.currentThread().getName() + "线程被调用了。");   
+    }   
+}
+```
+
+在Java 5之后，任务分两类：一类是实现了Runnable接口的类，一类是实现了Callable接口的类。两者都可以被ExecutorService执行，但是Runnable任务没有返回值，而Callable任务有返回值。并且Callable的call()方法只能通过ExecutorService的submit(Callable<T> task) 方法来执行，并且返回一个 <T>Future<T>，是表示任务等待完成的 Future。
+
+Callable接口类似于Runnable，两者都是为那些其实例可能被另一个线程执行的类设计的。但是 Runnable 不会返回结果，并且无法抛出经过检查的异常而Callable又返回结果，而且当获取返回结果时可能会抛出异常。Callable中的call()方法类似Runnable的run()方法，区别同样是有返回值，后者没有。
+
+当将一个Callable的对象传递给ExecutorService的submit方法，则该call方法自动在一个线程上执行，并且会返回执行结果Future对象。
 
 ### 启动线程
 
 在线程的Thread对象上调用start()方法，而不是run()或者别的方法。
 
-run()其实只是执行线程中的运行代码而已！
+run()其实只是执行线程中的运行代码而已！如果直接调用 Thread 的 run() 方法，它的行为就会和普通的方法一样；为了在新的线程中执行我们的代码，必须使用 Thread.start() 方法。
 
+参考文档在[这里](https://blog.csdn.net/m0_37840000/article/details/79756932)
+
+## 线程的几种可用状态
+
+1. 新建( new )：新创建了一个线程对象。
+
+2. 可运行( runnable )：线程对象创建后，其他线程(比如 main 线程）调用了该对象 的 start ()方法。该状态的线程位于可运行线程池中，等待被线程调度选中，获 取 cpu 的使用权 。
+
+3. 运行( running )：可运行状态( runnable )的线程获得了 cpu 时间片（ timeslice ） ，执行程序代码。
+
+4. 阻塞( block )：阻塞状态是指线程因为某种原因放弃了 cpu 使用权，也即让出了 cpu timeslice ，暂时停止运行。直到线程进入可运行( runnable )状态，才有 机会再次获得 cpu timeslice 转到运行( running )状态。阻塞的情况分三种：
+
+   (一). 等待阻塞：运行( running )的线程执行 o . wait ()方法， JVM 会把该线程放 入等待队列( waitting queue )中。
+
+   (二). 同步阻塞：运行( running )的线程在获取对象的同步锁时，若该同步锁 被别的线程占用，则 JVM 会把该线程放入锁池( lock pool )中。
+
+   (三). 其他阻塞: 运行( running )的线程执行 Thread . sleep ( long ms )或 t . join ()方法，或者发出了 I / O 请求时， JVM 会把该线程置为阻塞状态。      当 sleep ()状态超时、 join ()等待线程终止或者超时、或者 I / O 处理完毕时，线程重新转入可运行( runnable )状态。
+
+5. 死亡( dead )：线程 run ()、 main () 方法执行结束，或者因异常退出了 run ()方法，则该线程结束生命周期。死亡的线程不可再次复生。
+
+![img](http://uploadfiles.nowcoder.com/images/20151217/149974_1450349079825_4697A22AC611680A692472687DEC1CFD)
