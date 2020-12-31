@@ -1,5 +1,16 @@
 ## 基础 
 
+### 使用Parent POM
+
+这个包是所有其他starter依赖的父包，只需要声明它的版本，后面添加的starter依赖可以忽略版本号；如果需要指定特定的版本号，可以通过配置\<property>来设置，如下：
+
+```
+<properties>
+	<slf4j.version>1.7.30</slf4j.version>
+	<spring-data-releasetrain.version>Moore-SR6</spring-data-releasetrain.version>
+</properties>
+```
+
 ### 声明包
 
 虽然SpringBoot没有要求使用包，但是最好声明一些包，因为如果没有声明包，那么SpringBoot会使用默认的包，当使用某些注解（`@ComponentScan`, `@ConfigurationPropertiesScan`, `@EntityScan`, or `@SpringBootApplication`）的时候可能会出现问题，因为来自每个jar包的每个类都会被读取

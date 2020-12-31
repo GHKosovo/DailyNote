@@ -32,3 +32,11 @@
 ## 测试
 
 在测试里面，我用Mybatis Generator生成一些mybatis框架所需的内容。配置内容也都放在测试包中，直接生成配置内容。
+
+## 部署
+
+想打包成jar包后直接在cmd中使用jvm直接运行，但是发现，使用**IDEA的打包方式**，一直报错（Unable to start ServletWebServerApplicationContext due to missing ServletWebServerFactory bean.），我也不知道是乍回事
+
+但是在**idea**上运行没问题的；
+
+后面使用**maven打包**后就可以直接在cmd上直接与运行了
