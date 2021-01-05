@@ -10,15 +10,17 @@
 
 #### 容器操作
 
-根据镜像创建容器并启动：docker run --name -container-name -d -image-name
-
-启动容器：docker start -container-id/-container-name
+创建容器并启动：docker run --name -container-name -d -image-name
 
 > docker run要区别于docker start
 >
 > docker run其实集合了两条命令：docker create 和 docker start
 
-（-d：后台运行;-p: -host-port; -container-port：端口映射; -it  运行交互模式的容器; -P 将所有的公开端口映射到随机端口上）
+（`-d`：后台运行;`-p`: -host-port:-container-port：端口映射; `-it`  运行交互模式的容器，`-i`是以交互模式运行容器，而`-t`则是为容器分配一个伪输入终端，`-i`和`-t`经常一起使用; `-P` 将所有的公开端口映射到随机端口上）
+
+> docker run是docker里面使用最多的命令，后台和前台模式并不是一直都通用的的，比如nginx就是一个后台app，所以就不能把nginx以前台模式运行，而/bin/bash是交互式，也就是前台模式，所以不能用后台模式运行。
+
+启动容器：docker start -container-id/-container-name
 
 查看运行中的容器：docker ps (加-a，表示查看所以的容器)
 

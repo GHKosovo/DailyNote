@@ -70,32 +70,11 @@
     
     [参考链接](https://www.jianshu.com/p/6f0da4dfcb09)
     
-12. Arraylist和Linkedlist的区别？
-
-
-    Arraylist是数组，可以自增的数组，每次自增为1.5倍，自增的方式是位运算，它在内存地址中是连续内存空间；而linkedlist是链表，双向链表，它是采用前后节点指针的方式串联起来；
-
 13. 如何在双向链表插入新节点
 
 14. HashSet的储存原理
 
     其实HashSet的底层原理采用的是HashMap
-
-15. ArrayList && Vector 
-
-    Vector是用synchronized(上锁)修饰的类，所以它是线程安全的
-
-16. Hashtable&HashMap&ConcurrentHashMap
-
-    Hashtable是线程安全对象，会 出现 阻塞，效率不高；
-
-    HashMap是线程不安全对象，不会出现阻塞现象，效率高；但是多线程情况下，可能会出现线程不安全的情况，甚至出现死锁
-
-    concurrentHashMap兼顾前面两者；
-
-17. 如何写一个stack
-
-    其实是一个数组，特点是先进后出； 
 
 18. io流的分类和选择
 

@@ -34,9 +34,9 @@
 
 > 以下两个语句是相同的功能
 >
-> case id when '01' then 1 else 0 end 
+> case id when '01' then 1 else null end 
 >
-> case when id = '01' then 1 else 0 end 
+> case when id = '01' then 1 else null end 
 
 #### 方法函数
 
@@ -52,9 +52,17 @@
 
 联结两个字符或字段：concat(a,b)
 
-排名：rank()
+排名：
 
-​			dense_rank() （考虑并列的情况）
+- RANK：**并列跳跃排名**，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，跳跃到总共的排名。
+
+- DENSE_RANK：**并列连续排序**，并列即相同的值，相同的值保留重复名次，遇到下一个不同值时，依然按照连续数字排名。
+
+- ROW_NUMBER：**连续排名**，即使相同的值，依旧按照连续数字进行排名。
+
+rank() over(order by xx) 以xx为序进行排名
+
+​			dense_rank() over(order by xx)
 
 
 
