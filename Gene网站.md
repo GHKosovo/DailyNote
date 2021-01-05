@@ -26,7 +26,7 @@
 
 ### 12月22号
 
-download那里  你搞个小表格
+:heavy_check_mark:download那里  你搞个小表格
 
 - whole MaGiC  database : Download（下载链接）
 - Cell Paper : Download（下载链接，这个pdf问一下大侠拿）

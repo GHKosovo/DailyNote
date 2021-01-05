@@ -10,7 +10,13 @@
 
 #### 容器操作
 
-根据镜像启动容器：docker run --name -container-name -d -image-name
+根据镜像创建容器并启动：docker run --name -container-name -d -image-name
+
+启动容器：docker start -container-id/-container-name
+
+> docker run要区别于docker start
+>
+> docker run其实集合了两条命令：docker create 和 docker start
 
 （-d：后台运行;-p: -host-port; -container-port：端口映射; -it  运行交互模式的容器; -P 将所有的公开端口映射到随机端口上）
 
@@ -18,7 +24,9 @@
 
 停止运行中的容器：docker stop -container-id/-container-name
 
-启动容器：docker start -container-id/-container-name
+使用dockerfile或者上下文构建镜像：docker build path/url
+
+> 上下文可以是指定路径或者链接的一个文件集
 
 删除容器：docker rm -container-id
 
