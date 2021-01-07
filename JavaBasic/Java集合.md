@@ -28,9 +28,13 @@ Map集合方法有：equals(Object o)(比较指定对象与此map的等价性)�
 
 #### Hashtable&HashMap&ConcurrentHashMap之间的区别
 
-Hashtable是线程安全对象，会 出现 阻塞，效率不高；
+Hashtable是线程安全对象，会出现阻塞，效率不高；hashtable提供了对键的列举(Enumeration);Hashtable不允许键或者值为null
 
-HashMap是线程不安全对象，不会出现阻塞现象，效率高；但是多线程情况下，可能会出现线程不安全的情况，甚至出现死锁
+> Enumeration有点类似于迭代器，hasMoreElements()方法用于判断是否还有子元素；而nextElement()方法则是获取下一个元素。
+
+HashMap是线程不安全对象，不会出现阻塞现象，效率高；但是多线程情况下，可能会出现线程不安全的情况，甚至出现死锁;
+
+HashMap提供了迭代器；允许键和值为null
 
 concurrentHashMap兼顾前面两者；
 
