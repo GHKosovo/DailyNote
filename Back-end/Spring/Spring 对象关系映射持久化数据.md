@@ -28,16 +28,6 @@ Hibernate是在开发者社区很流行的开源持久化框架。它不仅提�
 
 获取Hibernate Session对象的标准方式是借助于Hibernate SessionFactory接口的实现类。除了一些其他的任务，SessionFactory主要负责Hibernate Session的打开、关闭以及管理。
 
-在Spring中，我们要通过Spring的某一个Hibernate Session工厂bean来获取Hibernate SessionFactory。从3.1版本开始，Spring提供了三个Session工厂bean供我们选择：
-
-1. org.springframework.orm.hibernate3.LocalSessionFactoryBean 
-2. org.springframework.orm.hibernate3.annotation.AnnotationSessionFactoryBean 
-3. org.springframework.orm.hibernate4.LocalSessionFactoryBean 
-
-这些Session工厂bean都是Spring FactoryBean接口的实现，它们会产生一个HibernateSessionFactory，它能够装配进任何SessionFactory类型的属性中。这样的话，就能在应用的Spring上下文中，与其他的bean一起配置Hibernate Session工厂。
-
-获取Hibernate Session对象的标准方式是借助于Hibernate SessionFactory接口的实现类。除了一些其他的任务，SessionFactory主要负责Hibernate Session的打开、关闭以及管理。
-
 在Spring中，我们要通过Spring的某一个Hibernate Session工厂bean来获取Hibernate SessionFactory。从3.1版本开始，Spring提供了三个Session工厂bean供我们选择： 
 
 1. org.springframework.orm.hibernate3.LocalSessionFactoryBean 
