@@ -371,6 +371,12 @@ $ git config --global alias.unstage 'reset HEAD --'		#给复杂的命令设置�
 $ git config --global alias.visual '!gitk'		#运行外部命令，我还不太懂	
 ```
 
+### 13.Diff
+
+
+
+
+
 <hr>
 
 ## Git Branching
