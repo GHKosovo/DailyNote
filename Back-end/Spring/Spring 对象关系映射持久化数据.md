@@ -311,7 +311,7 @@ nihao
 还有一件需要注意的事项，如果将Spring应用程序部署在应用服务器中，EntityManagerFactory可能已经创建好了并且位于JNDI中等待查询使用。在这种情况下，可以使用Spring jee命名空间下的\<jee:jndi-lookup>元素来获取对EntityManagerFactory 的引用：
 
 ```xml
-<jee:jndi-lookup id="emf" jndi-name="persistence/spitterPU" />
+<jee:jndi-lookup id="emf" jndi-name="persistence/spitterPU" />00
 ```
 
 我们也可以使用如下的Java配置来获取EntityManagerFactory ：
