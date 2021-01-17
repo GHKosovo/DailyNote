@@ -373,7 +373,12 @@ $ git config --global alias.visual '!gitk'		#运行外部命令，我还不太�
 
 ### 13.Diff
 
+`git diff` 用于查看哪些内容改变了，有什么不同。
 
+```sh
+$ git diff					#可查看还未放入暂存区，但是已修改的内容
+$ git diff xxx xxx			#xxx分别为两个提交的对应子串，可比较两次提交之间的不同
+```
 
 
 
