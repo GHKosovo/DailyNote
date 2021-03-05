@@ -32,3 +32,12 @@
 - Cell Paper : Download（下载链接，这个pdf问一下大侠拿）
 - Cell Paper supplement: Download（下载链接，这个excel表格问一下大侠拿）
 
+### 02月01号
+
+登录网址：http://14.23.114.254:5002/mediawiki/index.php?title=Special:UserLogin
+
+浏览Variant：http://14.23.114.254:5002/mediawiki/index.php/Variant%EF%BC%9Ars373407950(chr9-21974705-GtoT)
+
+修改Common.css：http://14.23.114.254:5002/mediawiki/index.php?title=MediaWiki:Common.css&action=edit
+
+修改Vector.css：http://14.23.114.254:5002/mediawiki/index.php/MediaWiki:Vector.css
