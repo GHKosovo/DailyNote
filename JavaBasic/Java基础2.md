@@ -8,9 +8,9 @@
 
 ### 第二天
 
-1. JDK：Java Runtime Environment，Java开发工具包，提供了Java的开发环境和运行环境。包含了编译Java源文件的编译器Javac，还有调试和分析的工具。
+1. JDK：Java Runtime Environment，Java开发工具包，提供了Java的开发环境和运行环境（JRE）。包含了编译Java源文件的编译器Javac，还有调试和分析的工具。JDK一般都包含有JRE，所以JDK是用于开发的。
 
-2. JRE：Java Runtime Environment，Java运行环境，包含Java虚拟机及一些基础类库
+2. JRE：Java Runtime Environment，Java运行环境，包含Java虚拟机及一些基础类库，如果只是运行JAVA程序，则只需要JRE，而不用JDK。
 
 3. JVM：Java Virtual Machine，Java虚拟机，提供执行字节码文件的能力
 

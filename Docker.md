@@ -44,3 +44,6 @@
   docker run --restart=always --name=容器名
 - 如果已经创建了容器
   docker update --restart=always 容器名
+
+### 构建
+
