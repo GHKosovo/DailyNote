@@ -25,7 +25,18 @@ Collections.sort(list,new Comparator<Student>(){
 
 #### ClassLoader做了什么？
 
-其实ClassLoader就是用啦加载Class的，把编译后的字节码文件*.class转换为内存中的Class对象。每个Class对象内部都有一个classLoader字段来标识自己是由哪个ClassLoader加载的。ClassLoader就像一个容器，里面装载了许多已经加载的Class对象。
+其实ClassLoader就是用来加载Class的，把编译后的字节码文件*.class转换为内存中的Class对象。每个Class对象内部都有一个classLoader字段来标识自己是由哪个ClassLoader加载的。ClassLoader就像一个容器，里面装载了许多已经加载的Class对象。
+
+大致步骤 如下：
+
+1. 装载：查找和导入Class文件到JAVA虚拟机中
+2. 链接/连接：执行校验、准备和解析步骤，解析步骤可选
+   - 校验：检查载入Class文件数据的正确性
+   - 准备：给类的静态变量分配存储空间
+   - 解析：将符号引用转换成直接引用，如内存地址指针
+3. 初始化：对类的静态变量、静态代码块执行初始化工作。
+
+最终结果就是一个被装载类型的Class类的实例对象，，它成为JAVA程序与内部数据结构之间的接口
 
 #### 延迟加载
 
@@ -43,7 +54,11 @@ JVM 运行实例中会存在多个 ClassLoader，不同的 ClassLoader 会从不
 
 #### 双亲委派
 
-其实在调用ClassLoader加载工作的时候，一般都是AppClassLoader负责，但是AppClassLoader在加载之前会调用他的parent，即BootstrapClassLoader 和 ExtensionClassLoader 来加载，如果他们都没法加载，最后才是AppLoader来加载
+JAVA虚拟机规范定义了两种类型的类加载器－启动类加载器(BootstrapClassLoader)和用户自定义类加载器，启动类加载器是JAVA虚拟机实现的一部分，通过继承ClassLoader类，用户可以创建自定义的类加载器来完成特定要求的加载。JAVA虚拟机已经创建了2个自定义类加载器－扩展类加载器(ExtensionClassLoader)和系统类加载器(ApplicationClassLoader)。
+
+其实在调用ClassLoader加载工作的时候，一般都是AppClassLoader负责，但是AppClassLoader在加载之前会调用他的parent，即BootstrapClassLoader 和 ExtensionClassLoader（BootstrapClassLoader是它的parent） 来加载，如果他们都没法加载，最后才是ApplicationClassLoader来加载
+
+这样，使用双亲-孩子委派链的方式，启动类装载器会在最可信的类库－核心Java API－中首先检查每个被装载的类型，然后，才依次到扩展路径、系统类路径中检查被装载的类型文件。用这种方法，类装载器的体系结构就可以防止不可靠的代码用它们自己的版本来替代可以信任的类。
 
 #### Class.forName
 
@@ -63,6 +78,38 @@ forName方法其实也是使用调用者Class对象的ClassLoader来加载目标
 4. 工具类的类加载器： ClassLoaderUtil.class.getClassLoader()
 
 **关于更多关于ClassLoader的说明，[请看这里](https://zhuanlan.zhihu.com/p/51374915)**
+
+#### 名称空间
+
+由不同的类装载器/类加载器加载的类将被放在虚拟机内部的不同命名空间。命名空间由一系列唯一的名称组成，每一个被装载的类有一个名字。JAVA虚拟机为每一个类装载器维护一个名字空间。例如，一旦JAVA虚拟机将一个名为Volcano的类装入一个特定的命名空间，它就不能再装载名为Valcano的其他类到相同的命名空间了。可以把多个Valcano类装入一个JAVA虚拟机中，因为可以通过创建多个类装载器从而在一个JAVA应用程序中创建多个命名空间。
+
+命名空间有助于安全的实现，因为你可以有效地在装入了不同命名空间的类之间设置一个防护罩。在JAVA虚拟机中，在同一个命名空间内的类可以直接进行交互，而不同的命名空间中的类甚至不能觉察彼此的存在，除非显示地提供了允许它们进行交互的机制，如获取Class对象的引用后使用反射来访问。
+
+##### 初始化类装载器/定义类装载器
+
+!（待议/To do）如果要求某个类装载器去装载一个类型，但是却返回了其他类装载器装载的类型，这种装载器被称为是那个类型的初始类装载器 ；而实际装载那个类型的类装载器被称为该类型的定义类装载器 。任何被要求装载类型，并且能够返回Class实例的引用代表这个类型的类装载器，都是这个类型的初始类装载器。比如使用AppClassLoader装载一个类型，但是却返回了BootstrapClassLoader，则BootstrapClassLoader是定义类装载器，而ApplicationClassLoader则是初始化装载器
+
+ 虚拟机会为每一个类装载器维护一张列表，列表中是已经被请求过的类型的名字。这些列表包含了每一个类装载器被标记为初始类装载器的类型，它们代表了每一个类装载器的命名空间。虚拟机总是会在调用loadClass()之前检查这个内部列表，如果这个类装载器已经被标记为是这个具有该全限定名的类型的初始类装载器，就会返回表示这个类型的Class实例，这样，虚拟机永远不会自动在同一个用户自定义类装载器上调用同一个名字的类型两次。
+
+##### 命名空间的类型共享
+
+ 前面提到过只有同一个命名空间内的类才可以直接进行交互，但是我们经常在由用户自定义类装载器定义的类型中直接使用Java API类，这不是矛盾了吗？这是类型共享 原因－如果某个类装载器把类型装载的任务委派给另外一个类装载器，而后者定义了这个类型，那么被委派的类装载器装载的这个类型，在所有被标记为该类型的初始类装载器的命名空间中共享。
+
+![img](https://img.jbzj.com/file_images/article/201703/201703010851082.gif)
+
+例如上面的例子中，Cindy可以共享Mon、Grandma、启动类装载器的命名空间中的类型，Kenny也可以共享 Mon、Grandma、启动类装载器的 命名空间中的 类型，但是Cindy和Kenny的命名空间不能共享。
+
+##### 运行时包
+
+每个类装载器都有自己的命名空间，其中维护着由它装载的类型。所以一个JAVA程序可以多次装载具有同一个全限定名的多个类型。这样一个类型的全限定名就不足以确定在一个JAVA虚拟机中的唯一性。因此，当多个类装载器都装载了同名的类型时，为了唯一表示该类型，还要在类型名称前加上装载该类型的类装载器来表示－[classloader class]。
+
+ 在允许两个类型之间对包内可见的成员进行访问前，虚拟机不但要确定这个两个类型属于同一个包，还必须确认它们属于同一个运行时包－它们必须由同一个类装载器装载的。这样，java.lang.Virus和来自核心的java.lang的类不属于同一个运行时包，java.lang.Virus就不能访问JAVA API的java.lang包中的包内可见的成员。
+
+**更多详细内容，请看[这里](https://www.jb51.net/article/107040.htm)**
+
+#### 自定义类加载器
+
+ JAVA类型要么由启动类装载器装载，要么通过用户自定义的类装载器装载。启动类装载器是虚拟机实现的一部分，它以与实现无关的方式装载类型，JAVA提供了抽象类java.lang.ClassLoader，用户自定义的类装载器是类ClassLoader的子类实例，它以定制的方式装载类。所有用户自定义类装载器都实例化自ClassLoader的子类。
 
 #### Class对象是什么？
 

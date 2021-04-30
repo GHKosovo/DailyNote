@@ -17,6 +17,8 @@
 
 ### 定位主程序类
 
+> 主程序类其实就是代替以前的web.xml文件，可以通过它来添加并启动servlet和listener等
+
 在其他类的根包上定义主应用程序，这样，主类上`@SpringBootApplication`就能够隐式地搜寻这些包下的类
 
 而`@SpringBootApplication`可以用  `@EnableAutoConfiguration` and `@ComponentScan` 来代替
