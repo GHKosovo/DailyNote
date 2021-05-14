@@ -22,3 +22,5 @@ cms_easy:用户：jaline；密码：jaline2021
 
 小皮面板：用户名：admin；密码：Luoj9003
 
+洁琳阿里云：用户名：liripo;密码：Luoj1134686
+
