@@ -26,4 +26,4 @@ cms_easy:用户：jaline；密码：jaline2021
 
 cms_easy_66:用户：jaline；密码：jaline
 
-使用原来的数据搭配7.0——UTF-8_20181212可以搭配成功。
+
