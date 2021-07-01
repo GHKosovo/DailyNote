@@ -1,10 +1,51 @@
 # Json数据
 
+## 处理json字符串
+
+常用的是使用fastjson这个工具来操作
+
+> Json对象，内部是用键值对来存储数据的
+
+通过它，可以把json字符串转化为json对象JsonObject，然后通过JsonObject来获取其内部的JsonObject对象和JsonArray数组对象，也可以通过
+
+```java
+//转化json字符串为JsonObject对象
+JSONObject jsonObject = JSON.parseObject(jsonfork);
+//通过对象的String字符串key值获取对象的值
+String orderId = (String) jsonObject.getString("orderId");
+//获取Json数组对象
+JSONArray order = jsonObject.getJSONArray("order");
+```
+
+### JsonObject对象
+
+JsonObject对象可以通过get()方法来获取某对象key对应的值，也可以通过其他类型的getxxx(String key)方法来获取不同类型的值，比如getString()、getInteger()、getFloat()、getDate()等方法；当然也可以自己设置类，返回对应的对象getObject(xxx,Student.Class)
+
+> 参数是String类型
+
+```java
+String orderId = (String) jsonObject.getString("orderId");
+
+Phone phone = objects.getObject("order", Phone.class);
+```
+
+
+
+### JsonArray对象
+
+JsonArray对象其实跟JsonObject对象差不多，只不过，获取内部数据，是通过数组下标，而不是通过key来获取；同样，它也有getxxx(int index)方法来获取不同类型的值，比如getString()、getInteger()、getFloat()、getDate()等方法；
+
+> 只不过参数是下标
+
+```java
+Phone phone = objects.getObject(i, Phone.class);
+```
+
+
+
 ## #前言
 
 前台页面通常都会通过`Ajax`来获取后台的数据，某些接口传输数据也都是以`Json`格式来传输，故处理`Json`格式数据边得很重要鸭:duck:
-
-<!--more-->
 
 ## 处理Json格式数据
 
@@ -32,7 +73,7 @@ JSONObject jsonObject =JSON.parseObject(result);
 String name = jsonObject.getString("name");
 ```
 
-另一方面，如果要传输`json数据包`​​，一般也是先编写好<span class="ljspan ljspan-red">json对象</span>后，转化为<span class="ljspan ljspan-red">json对象</span>后传输​。:cactus:
+另一方面，如果要传输`json数据包`​​，一般也是先编写好<span class="ljspan ljspan-red">json对象</span>后，转化为<span class="ljspan ljspan-red">json字符串</span>后传输​。:cactus:
 
 ```
 {
@@ -85,6 +126,7 @@ String jsonString = jsonObject.toJSONString();
 
 <hr>
 
+
 ## 自动转化json数据
 
 后台服务可以自动转化某类对象为json格式到前台页面，前端页面可直接取用，你说神不神奇:frog:,它一般结合`@ResponseBody`一起使用
@@ -99,4 +141,10 @@ String jsonString = jsonObject.toJSONString();
     <version>2.9.8</version>
 </dependency> 
 ```
+
+
+
+## Springboot自动包装返回值为Json字符串
+
+现如今，Springboot在Controller层可以使用@ResponseBody注解，则Controller返回数据能够在页面上显示，而且是以json格式。
 
