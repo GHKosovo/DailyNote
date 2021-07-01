@@ -548,7 +548,7 @@ $ git fetch --all; git branch -vv   #获取最新更新消息
 
 #### Pulling
 
-除了使用`git fetch `拉取数据，还可以用`git pull`，再重申一遍，`git pull`拉取数据后会顺便合并分支；不过一般还是使用`git fetch`拉取数据，比较号，`git pull`经常会失败。
+除了使用`git fetch `拉取数据，还可以用`git pull`，再重申一遍，`git pull`拉取数据后会顺便合并分支；不过一般还是使用`git fetch`拉取数据，比较好，`git pull`经常会失败。
 
 #### Delete Remote Branches
 
