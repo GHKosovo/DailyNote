@@ -8,11 +8,11 @@ UML--(Unified modeling language)统一建模语言，一种图标式语言，用
 
 UML 本身是一套符号的规定，就像数学符号和化学符号一样，这些符号用于描述软件模型中的各个元素和他们之间的关系，比如类、接口、实现、泛化、依赖、组合、聚合等，如下图:
 
-![image-20210707110623872](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210707110623872.png)
+![image-20210707110623872](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707110623872.png)
 
 使用UML来建模，常用的工具有Rational Rose，也可以使用一些插件来建模，比如Eclipse安装UML插件（AmaterasUML）
 
-![image-20210707110820903](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210707110820903.png)
+![image-20210707110820903](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707110820903-1627019639189.png)
 
 ## 分类
 
@@ -53,7 +53,7 @@ public class Department{}
 
 **对应的类图**
 
-![image-20210707112227490](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210707112227490.png)
+![image-20210707112227490](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707112227490.png)
 
 小结：类的成员属性；方法的返回类型；方法接收的参数类型；方法中使用到的变量；这些在类中使用到，或类中方法使用到的，就符合依赖关系
 
@@ -73,7 +73,7 @@ public class PersonServiceBean extends Daosupport{
 
 **对应的类图**
 
-![PersonServiceBeanOne](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5CPersonServiceBeanOne.png)
+![PersonServiceBeanOne](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPersonServiceBeanOne.png)
 
 小结：
 
@@ -98,7 +98,7 @@ public class PersonServiceBean implements PersonService {
 
 **对应的类图**
 
-![PersonServiceBean](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5CPersonServiceBean.png)
+![PersonServiceBean](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPersonServiceBean-1627019712662.png)
 
 ### 关联关系
 
@@ -132,7 +132,7 @@ public class Computer {
 
 **对应的类图**
 
-![Computer](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5CComputer.png)
+![Computer](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CComputer.png)
 
 ### 组合关系
 
@@ -153,4 +153,4 @@ public class Head{}
 
 **对应的类图**
 
-![Person](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5CPerson.png)
+![Person](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPerson.png)

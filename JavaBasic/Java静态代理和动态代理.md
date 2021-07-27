@@ -6,7 +6,7 @@
 
 代理需要具备的东西，如下图：
 
-![静态代理结构图](C:\Users\llj\Documents\typero图像\image-20200618140146939.png)
+![image-20200618140146939](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5Cimage-20200618140146939.png)
 
 代理类需要包含真实对象，同时需要实现接口，这个接口就是某些真实对象想要做的事，即方法，通过方法做想要做的事，这里所讲的就是**静态代理**的规则
 

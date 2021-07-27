@@ -35,3 +35,4 @@ springboot配置spring data jpa十分简单
 CRUD方法也无需注解和实现，EntityManager也无需创建，springboot都已经帮忙创建好了。
 
 ![img](file:///C:/Users/llj/AppData/Roaming/Foxmail7/Temp-12200-20210306125936/Attach/Catch(03-06-22-59-45).jpg)
+

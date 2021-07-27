@@ -20,7 +20,7 @@
 
 ## cms—easy_7.2
 
-![image-20210528125027247](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210528125027247.png)
+![image-20210528125027247](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210528125027247-1627020656408.png)
 
 修改模板，删除了这个模板标签
 

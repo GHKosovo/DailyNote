@@ -2,7 +2,7 @@
 
 最开始是微信公众号上关于网页授权域名的设置文件而引出来的
 
-![image-20210623110217406](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210623110217406.png)
+![image-20210623110217406](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210623110217406.png)
 
 这里要求将某个文件传输到web服务器的目录，将文件放到域名根目录下，但是我部署的项目是在tomcat上的，而且tomcat上根目录上有其他项目了，我地公众号项目是有项目名的，龟龟:turtle::turtle:，这怎么搞啊！
 
@@ -34,9 +34,9 @@
             #  {
             #     proxy_pass http://127.0.0.1;#默认80端口
             #  }
-    
+        
             # autoindex on;
-    
+        
         }
 
 注意 要在 /data/xxx/data/ 文件夹里面建立一个 images 文件夹 不然访问不到
@@ -50,6 +50,6 @@
         # 精细化 配置相关静态资源参数，优化访问静态资源文件
         location ~ .*\.(gif|jpg|jpeg|png)$ {
             root /data/fengjing/data/;#指定图片存放路径   
-    		
+        	
         }
 #抄自博主[一粒沙爱上了沙尘暴](https://blog.csdn.net/qq_16720391/article/details/106826281)

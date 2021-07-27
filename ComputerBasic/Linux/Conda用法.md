@@ -26,7 +26,7 @@ conda create -p=path/env_name python=python_version
 
 :boom:解决方法:是使用{% lebal success@软链接 %}把路径引入path/miniconda/env/env_name中，就可以了，like the picture show below.
 
-![](C:\Users\llj\AppData\Roaming\Typora\typora-user-images\image-20200316111210232.png)
+![image-20200316111210232](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CComputerBasic%5CLinux%5Cimage-20200316111210232.png)
 
 <hr>
 
