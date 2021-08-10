@@ -40,17 +40,17 @@
 
 ”模板“-”幻灯片“：在这里可以设置首页的轮播图
 
-![image-20210603105005736](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603105005736.png)
+![image-20210603105005736](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603105005736-1627020386844.png)
 
 ### 模板标签
 
 ”模板“-”模板标签“：这里就是设置网站排版的主阵地，通过模板的标签的设置，可以修改首页、栏目、商品等的排版和位置，其实这里的模板标签内容就是一个个栏目或者内容，需要到”添加“中去添加栏目或者内容，才能显示该标签对应的栏目或内容
 
-![image-20210603112043169](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603112043169.png)
+![image-20210603112043169](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603112043169.png)
 
 在”模板标签列表“选择任意一个模板标签（比如首页第三行栏目）点击”编辑“，显示如下，选择”联系我们“栏目
 
-![image-20210603112405252](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603112405252.png)
+![image-20210603112405252](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603112405252.png)
 
 ### 编辑模板
 
@@ -68,13 +68,13 @@
 
 在栏目和内容中，都可以在”扩展“中设置图片/缩略图，在”信息“中设置信息，这个图片和信息就是首页显示该栏目或内容是显示的图片和内容
 
-![image-20210603103526377](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603103526377.png)
+![image-20210603103526377](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603103526377.png)
 
 **模板标签一般的内容都是栏目**
 
 一般的模板标签中的栏目都包含内容，然后这个模板模块中，对应的栏目没有图片和信息，而该栏目下的内容一般都有图片和信息，一个栏目下一般都有多个内容
 
-![image-20210603103948398](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603103948398.png)
+![image-20210603103948398](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603103948398.png)
 
 ### 内容信息和简介
 
@@ -84,7 +84,7 @@
 
 公告可以在”扩展“-”公告“中添加、编辑
 
-![image-20210603105029850](C:%5CUsers%5Cllj%5CDocuments%5Ctypero%E5%9B%BE%E5%83%8F%5Cimage-20210603105029850.png)
+![image-20210603105029850](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20210603105029850-1627020526276.png)
 
 ## 备份
 
@@ -93,6 +93,7 @@
 通过“安全“-”管理数据“可查看
 
 <<<<<<< HEAD
+
 ## FTP
 
 使用FTP修改或者上次文件夹/文件的时候，需要设置传输类型为二进制，不然会出现无法解析而无法使用上传的文件

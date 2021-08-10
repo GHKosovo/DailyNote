@@ -1,4 +1,4 @@
-## ![640px-MySQL_logo.svg](C:\Users\llj\Documents\typero图像\640px-MySQL_logo.svg.png)
+## ![640px-MySQL_logo.svg](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CDataBase%5C640px-MySQL_logo.svg.png)
 
 这里的mysql用法分linux和window两个部分，同时也采集了一些操作mysql时遇到的问题，放在结尾部分:card_index_dividers:
 

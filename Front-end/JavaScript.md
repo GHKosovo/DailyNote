@@ -21,7 +21,7 @@
 
 1. 使用`Ajax`来发送数据，可以遇到一个问题，貌似要在服务器端设置响应头部`Access-Control-Allow-Origin`
 
-![image-20200611105650226](C:\Users\llj\Documents\typero图像\image-20200611105650226.png)
+![image-20200611105650226](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CFront-end%5Cimage-20200611105650226.png)
 
 ​	解决方案：把服务器响应的数据改为`Json`，这样就可以了！因为需要解析！
 

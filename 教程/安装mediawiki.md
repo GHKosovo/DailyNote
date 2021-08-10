@@ -1,8 +1,6 @@
 ## #前言
 
-安装<span class="ljspan ljspan-reverse ljspan-yellow">[mediawiki](https://www.mediawiki.org/wiki/MediaWiki)</span>很简单:grinning:，比较难的是需要安装她所需要的软件和配置，我在ubuntu安装过几个，都成功了，但是在centos上安装时，发现web服务器和<span class="ljspan ljspan-reverse ljspan-yellow">[mediawiki](https://www.mediawiki.org/wiki/MediaWiki)</span>出现某些冲突，导致无法使用，具体什么问题，我也不清楚，可能是我的web服务器配置出问题.....:weary:
-
-<!--more-->
+安装<span class="ljspan ljspan-reverse ljspan-yellow">[mediawiki](https://www.mediawiki.org/wiki/MediaWiki)</span>很简单:grinning:，比较难的是需要安装她所需要的软件和配置，我在ubuntu安装过几个，都成功了，但是在centos上安装时，发现web服务器和<span class="ljspan ljspan-reverse ljspan-yellow">[mediawiki](https://www.mediawiki.org/wiki/MediaWiki)</span>出现某些冲突，导致无法使用，具体什么问题，我也不清楚，可能是我的web服务器配置出问题.....
 
 ## 安装
 
@@ -12,9 +10,9 @@
 
 然后用composer安装一些依赖，如果这时候无法安装，出现内存不够（重启系统）或下载失败（修改composer镜像），这些都可以通过百度一一解决；但是修改composer镜像比较麻烦:hankey:
 
-在修改镜像过程中，如果提示无法修改，出现类似问题:dizzy_face:：**Could not read /home/用户名/.composer/config.json**
+在修改镜像过程中，如果提示无法修改，出现类似问题：**Could not read /home/用户名/.composer/config.json**
 
-> [这里](https://developer.aliyun.com/composer)是阿里云提供的修改镜像的方法:nail_care:
+> [这里](https://developer.aliyun.com/composer)是阿里云提供的修改镜像的方法
 
 那么就修改一下`/home/用户名/.composer/config.json`和`/home/用户名/.composer/auth.json`的权限为777再重新运行composer 就应该可以了
 
@@ -39,7 +37,7 @@
 那么简单，步骤如下:feet:
 
 1. 输入网址：`http://ip:端口/项目/mw-config`
-2. 在{% label warning@LocalSettings.php %}中查找一个wgUpgrade的参数，然后把它复制后填入网页中，就可以了
+2. 在LocalSettings.php中查找一个wgUpgrade的参数，然后把它复制后填入网页中，就可以了
 
 ### 如果想要连数据库等重要配置都重置
 

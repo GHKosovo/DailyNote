@@ -32,7 +32,7 @@ __插件__下载/配置地址：
 
 如图所示：
 
-![image-20200528112413587](C:\Users\llj\Documents\typero图像\image-20200528112413587.png)
+![image-20200528112413587](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5C%E6%95%99%E7%A8%8B%5Cimage-20200528112413587.png)
 
 对于**图中选中的部分**就是[下载地址](https://github.com/aria2/aria2)下载的部分，这部分主要需要替代**插件**中的<span class="ljspan ljspan-reverse">aria2c</span>这个东西，其他的可以忽略
 

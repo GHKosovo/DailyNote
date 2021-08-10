@@ -14,7 +14,7 @@
 
 然后根据apache官方文档写程序，如下
 
-![image-20200929164203171](C:\Users\llj\Documents\typero图像\image-20200929164203171.png)
+![image-20200929164203171](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CBack-end%5Cimage-20200929164203171.png)
 
 我发现fileUpload无法解析request，我觉得很奇怪，为什么呢？
 
