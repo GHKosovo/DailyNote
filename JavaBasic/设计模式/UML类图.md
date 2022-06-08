@@ -53,7 +53,7 @@ public class Department{}
 
 **对应的类图**
 
-![image-20210707112227490](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707112227490.png)
+![image-20210707112227490](/JavaBasic/设计模式/image-20210707112227490.png)
 
 小结：类的成员属性；方法的返回类型；方法接收的参数类型；方法中使用到的变量；这些在类中使用到，或类中方法使用到的，就符合依赖关系
 
@@ -73,7 +73,7 @@ public class PersonServiceBean extends Daosupport{
 
 **对应的类图**
 
-![PersonServiceBeanOne](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPersonServiceBeanOne.png)
+![PersonServiceBeanOne](/JavaBasic/设计模式/PersonServiceBeanOne.png)
 
 小结：
 
@@ -98,7 +98,7 @@ public class PersonServiceBean implements PersonService {
 
 **对应的类图**
 
-![PersonServiceBean](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPersonServiceBean-1627019712662.png)
+![PersonServiceBean](/JavaBasic/设计模式/PersonServiceBean-1627019712662.png)
 
 ### 关联关系
 
@@ -132,7 +132,7 @@ public class Computer {
 
 **对应的类图**
 
-![Computer](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CComputer.png)
+![Computer](/JavaBasic/设计模式/Computer.png)
 
 ### 组合关系
 
@@ -153,4 +153,4 @@ public class Head{}
 
 **对应的类图**
 
-![Person](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5CPerson.png)
+![Person](/JavaBasic/设计模式/Person.png)
