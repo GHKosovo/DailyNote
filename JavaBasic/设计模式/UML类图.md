@@ -8,11 +8,11 @@ UML--(Unified modeling language)统一建模语言，一种图标式语言，用
 
 UML 本身是一套符号的规定，就像数学符号和化学符号一样，这些符号用于描述软件模型中的各个元素和他们之间的关系，比如类、接口、实现、泛化、依赖、组合、聚合等，如下图:
 
-![image-20210707110623872](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707110623872.png)
+![image-20210707110623872](/image-20210707110623872.png)
 
 使用UML来建模，常用的工具有Rational Rose，也可以使用一些插件来建模，比如Eclipse安装UML插件（AmaterasUML）
 
-![image-20210707110820903](F:%5CAA_LLJ%5CGitRepository%5CDailyNote%5CJavaBasic%5C%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%5Cimage-20210707110820903-1627019639189.png)
+![image-20210707110820903](/../image-20210707110820903-1627019639189.png)
 
 ## 分类
 
