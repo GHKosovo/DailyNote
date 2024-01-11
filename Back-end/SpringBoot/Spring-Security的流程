@@ -1,0 +1,19 @@
+1.拦截器拦截请求
+1.1SecurityContextHolder是Spring Security 存储用户 验证 细节的地方
+通过SecurityContextHolder可以获取或设置SecurityContext,通过SecurityContext可以获取或设置Authentication。
+1.2通过AuthenticationManager（可设置authentication和获取authentication），主要用它来完成认证，它会去调用UserDetailService 接口的loadUserByUsername,由此获取UserDetails，然后还会去使用passwordEncoder来完成密码的比对工作。所以通常都会暴露它为一个bean对象，直接使用它来认证用户，获取用户信息，比如登陆的时候，直接传用户名和密码，用authenticate()方法，获取Authentication，然后通过它获取用户信息
+它也是定义 Spring Security 的 Filter 如何执行 认证 的API，也就是通过它来完成用户认证的，用户名是否存在，密码是否正确等。
+
+AuthenticationEntryPoint 用于发送一个要求客户端提供凭证的HTTP响应，当然只出现在客户端向他们未被授权访问的资源发出未经认证的请求
+
+AbstractAuthenticationProcessingFilter 被用作验证用户凭证的基础 Filter，它可以从HttpServletRequest 中创建一个认证的Authentication，随后把他交给AuthenticationManager进行认证
+
+AuthenticationManager的实现一般是ProviderManager ，而ProviderManager 则一般委托给一个AuthenticationProvider集合，每个AuthenticationProvider都可以进行认证，也就是可以进行多类型认证。
+
+一般常见的是通过userDetailService结合密码加密对象生成，UserDetailsService 被 DaoAuthenticationProvider 用来检索用户名、密码和其他属性，以便用用户名和密码进行认证
+
+2.密码加密对象
+
+3.userDetailService返回查询后的包装对象UserDetail，DaoAuthenticationProvider 验证 UserDetails，然后返回一个 Authentication
+
+#[参考内容: https://blog.csdn.net/weixin_46073538/article/details/128641746]
